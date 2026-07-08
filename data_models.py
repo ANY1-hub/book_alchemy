@@ -1,5 +1,7 @@
+from typing import Optional
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy import Column, Integer, String, DateTime
 
 db = SQLAlchemy()
 
@@ -7,8 +9,8 @@ db = SQLAlchemy()
 class Author(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)
-    birth_date = Column(Date)
-    date_of_death = Column(Date)
+    birth_date: Optional[datetime] = Column(DateTime, nullable=True)
+    date_of_death: Optional[datetime] = Column(DateTime, nullable=True)
 
     def __str__(self):
         return f'id: {self.id}, name: {self.name}, birth_date: {self.birth_date}, date_of_death: {self.date_of_death}'
@@ -21,7 +23,7 @@ class Book(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     isbn = Column(String)
     title = Column(String)
-    publication_year = Column(Date)
+    publication_year: Optional[datetime] = Column(DateTime)
     author_id = db.Column(Integer, db.ForeignKey('author.id'))
 
     def __str__(self):
