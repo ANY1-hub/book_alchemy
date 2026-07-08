@@ -22,6 +22,11 @@ h1 {
     font-size: 2.6rem;
 }
 
+nav > form {
+    display: flex;
+    flex-direction: column;
+      }
+
 /* Books List */
 .books-container {
     max-width: 800px;

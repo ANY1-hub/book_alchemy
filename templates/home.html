@@ -11,6 +11,16 @@
     <header>
     <h1>my books</h1>
     </header>
+    <nav>
+        <form method="GET">
+            <label for='sort_by'>Sort by:</label>
+            <select name="sort_by" id="sort_by" onchange="this.form.submit()">
+                <option value="title" {% if request.args.get('sort_by') == 'title' %}selected{% endif %}>Title</option>
+                <option value="author" {% if request.args.get('sort_by') == 'author' %}selected{% endif %}>Author</option>
+                <option value="year" {% if request.args.get('sort_by') == 'year' %}selected{% endif %}>1st Publication</option>
+            </select>
+        </form>
+    </nav>
     <div class="books-container">
         {% for book in books %}
         <div class="book-card">
@@ -39,4 +49,3 @@
     <footer>my books collection</footer>
     </main>
 </body>
-</html>
