@@ -13,7 +13,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'data
 # connect Flask app to flask-alchemy code
 db.init_app(app)
 
-
 @app.route('/add_author', methods=['GET', 'POST'])
 def add_author():
     if request.method == 'POST':
@@ -34,15 +33,54 @@ def add_author():
             db.session.add(new_author)
             db.session.commit()
             flash('Data successfully recorded')
+            # after successfull commit redirect (a new GET) so there can be no accidental double entry
             return redirect(url_for('add_author'))
         except ValueError as e:
             flash(f'missing input {e}')
 
     return render_template('author_form.html')
 
+@app.route('/add_book', methods=['GET', 'POST'])
+def add_book():
+    authors = None
+    if request.method == 'GET':
+        try:
+            authors = db.session.execute(db.select(Author)).scalars().all()
+            if not authors:
+                flash('There was a problem retrieving the list of authors')
+        except Exception as e:
+            flash(f'There was a problem, trying to retrieve the data: {e}')
+        return render_template('book_form.html', authors=authors)
+
+    if request.method == 'POST':
+        try:
+            title = request.form.get('title')
+            if not title:
+                flash('Title is required')
+                return render_template('book_form.html')
+            author_id = request.form.get('author_id')
+            isbn = request.form.get('isbn')
+            try:
+                publication_year = int(request.form.get('publication_year', None))
+                if not 1455 <= publication_year < (int(datetime.now().year) + 1):
+                    flash('Please enter a valid year')
+                    return render_template('book_form.html')
+            except ValueError:
+                flash('Please enter a valid year (4 digits)')
+            new_book = Book(title=title, author_id=author_id, isbn=isbn, publication_year=publication_year)
+            db.session.add(new_book)
+            db.session.commit()
+            flash('Data successfully recorded')
+            return redirect(url_for('add_book'))
+        except ValueError as e:
+            flash(f'missing input {e}')
+
+    return render_template('book_form.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 """
 # ran only once to create the db
 with app.app_context():

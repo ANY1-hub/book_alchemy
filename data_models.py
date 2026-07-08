@@ -7,7 +7,7 @@ db = SQLAlchemy()
 
 
 class Author(db.Model):
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    author_id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)
     birth_date: Optional[datetime] = Column(DateTime, nullable=True)
     date_of_death: Optional[datetime] = Column(DateTime, nullable=True)
@@ -20,11 +20,11 @@ class Author(db.Model):
         return f'Author(id: {self.id}(int), name: {self.name}(str), birth_date: {self.birth_date}(date), date_of_death: {self.date_of_death}(date))'
 
 class Book(db.Model):
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    book_id = Column(Integer, primary_key=True, autoincrement=True)
     isbn = Column(String)
     title = Column(String)
-    publication_year: Optional[datetime] = Column(DateTime)
-    author_id = db.Column(Integer, db.ForeignKey('author.id'))
+    publication_year: Optional[int] = Column(Integer, nullable=True)
+    author_id = db.Column(Integer, db.ForeignKey('author.author_id'))
 
     def __str__(self):
         return f'id: {self.id}, isbn: {self.isbn}, title: {self.title}, publication_year: {self.publication_year}, author_id: {self.author_id}'
