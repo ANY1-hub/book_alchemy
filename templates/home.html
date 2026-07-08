@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>my books</title>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <main>
+    <header>
+    <h1>my books</h1>
+    </header>
+    <div class="books-container">
+        {% for book in books %}
+        <div class="book-card">
+
+            <img alt='{{ book.title }}' class="movie-poster" src='https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg' />
+            <h2 class="book-title">{{ book.title }}</h2>
+            <div class="book-info">
+                <strong>author:</strong> {{ book.author.name }}<br>
+                <strong>isbn:</strong> {{ book.isbn }}<br>
+                <strong>1st published:</strong> {{ book.publication_year }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <footer>my books collection</footer>
+    </main>
+</body>
+</html>

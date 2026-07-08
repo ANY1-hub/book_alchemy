@@ -43,6 +43,7 @@ def add_author():
 @app.route('/add_book', methods=['GET', 'POST'])
 def add_book():
     authors = None
+    publication_year = None
     if request.method == 'GET':
         try:
             authors = db.session.execute(db.select(Author)).scalars().all()
@@ -76,6 +77,17 @@ def add_book():
             flash(f'missing input {e}')
 
     return render_template('book_form.html')
+
+@app.route('/', methods=['GET'])
+def home():
+    books = None
+    try:
+        books = db.session.execute(db.select(Book).order_by(Book.title)).scalars().all()
+        if not books:
+            flash('There was a problem retrieving the list of books')
+    except Exception as e:
+        flash(f'There was a problem, trying to retrieve the data: {e}')
+    return render_template('home.html', books=books)
 
 
 if __name__ == '__main__':
