@@ -17,6 +17,10 @@ db.init_app(app)
 
 @app.route('/add_author', methods=['GET', 'POST'])
 def add_author():
+    """
+    routing for adding an author
+    :return: rendered author_form template
+    """
     if request.method == 'POST':
         try:
             name = request.form.get('name')
@@ -45,7 +49,7 @@ def add_author():
 @app.route('/add_book', methods=['GET', 'POST'])
 def add_book():
     """
-
+    routing for addin a book
     :return: rendered book_form template
     """
     authors = None
@@ -86,14 +90,15 @@ def add_book():
 
 @app.route('/', methods=['GET'])
 def home():
-
+    """
+    routing for landing page
+    :return: rendered home template
+    """
     sort_by = request.args.get('sort_by', 'title') # Default: Title
     search_text = request.args.get('search_text', '')
-    print(f"search_text: '{search_text}'")
-    print(f"search_text is None: {search_text is None}")
     try:
         if search_text:
-            # get all the books, and with the help of the relationship the Author data as well.
+            # get the books filtered by search_text. & with the joinedload the Author data.
             books = db.session.execute(
                 db.select(Book)
                 .join(Book.author)  # because of Filtering
@@ -124,6 +129,19 @@ def home():
 
     return render_template('home.html', books=books, search_text=search_text)
 
+
+@app.route('/book/<int:book_id>/delete', methods=['POST'])
+def delete_book(book_id):
+    """
+    routing for deleting a book
+    :return: rendered home template after deletion
+    """
+    db.session.execute(db.delete(Book).where(Book.book_id == book_id))
+    db.session.commit()
+
+    return redirect(url_for('home'))
+
+#TODO Navigation buttons between pages
 
 if __name__ == '__main__':
     app.run(debug=True)

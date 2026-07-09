@@ -2,6 +2,7 @@
     --primary: #2563eb;
     --text: #1f2937;
     --light-bg: #f8fafc;
+    --light-gr-bg: #ddd;
     --card-bg: #fff;
     --accent: #14b8a6;
     --light-text: #bbb;
@@ -23,25 +24,51 @@ h1 {
     font-size: 2.6rem;
 }
 
+/* Navigation bar */
+nav {
+    margin-bottom: 2rem;
+}
+
+
 nav > form {
+    background: var(--light-gr-bg) ;
+    padding: .5rem;
     display: flex;
     justify-content: flex-end;
-    margin: .5rem 0 .5rem;
+    margin: 0 ;
     flex-wrap: wrap;
 }
 
+
 nav select#sort_by {
     max-width: fit-content;
+    height: 2.5rem;
+    align-self: anchor-center;
 }
+
+nav input.button {
+    height: 2.3rem;
+    line-height: .4;
+}
+
+nav #search_text {
+    padding: .5rem;
+    line-height: 1;
+    height: 1.2rem;
+}
+
 nav .search_wrapper {
     display: flex;
+    align-items: center;
 }
 
 nav label {
-    justify-self: flex-start;
     padding: .5rem;
     min-width: fit-content;
+    line-height: .4;
 }
+
+
 ::placeholder {
     color: var(--light-text);
       }
@@ -55,10 +82,15 @@ nav label {
 .book-card {
     background-color: var(--card-bg);
     border-radius: 12px;
-    padding: 1.5rem;
+    padding: 2rem;
     margin-bottom: 1.2rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.book-card form {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .book-card:hover {
@@ -78,7 +110,8 @@ nav label {
 }
 
 /* Forms */
-form {
+form:not(.delete_button)
+ {
     max-width: 600px;
     margin: 0 auto;
     background-color: var(--card-bg);
