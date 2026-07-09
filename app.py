@@ -1,3 +1,5 @@
+from sqlalchemy.orm import joinedload
+
 from data_models import db, Author, Book
 from datetime import datetime
 from dotenv import load_dotenv
@@ -80,13 +82,26 @@ def add_book():
 
 @app.route('/', methods=['GET'])
 def home():
-    books = None
+    sort_by = request.args.get('sort_by', 'title')   # Default: Title
+
     try:
-        books = db.session.execute(db.select(Book).order_by(Book.title)).scalars().all()
-        if not books:
-            flash('There was a problem retrieving the list of books')
+        # get all the books, and with the help of the relationship the Author data as well.
+        books = db.session.execute(
+            db.select(Book).options(joinedload(Book.author))
+        ).scalars().all()
+
+        # Sort the Data in the variable, not before the query (should work at this scale, not for a library)
+        if sort_by == 'author':
+            books = sorted(books, key=lambda b: b.author.name.lower() if b.author and b.author.name else "")
+        elif sort_by == 'year':
+            books = sorted(books, key=lambda b: b.publication_year or 0)
+        else:  # title
+            books = sorted(books, key=lambda b: b.title.lower() if b.title else "")
+
     except Exception as e:
-        flash(f'There was a problem, trying to retrieve the data: {e}')
+        flash(f'Fehler beim Laden der Bücher: {e}')
+        books = []
+
     return render_template('home.html', books=books)
 
 
