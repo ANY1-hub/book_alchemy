@@ -1,9 +1,9 @@
-from sqlalchemy.orm import joinedload
-
 from data_models import db, Author, Book
 from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask, flash, render_template, request, redirect, url_for
+from sqlalchemy import or_
+from sqlalchemy.orm import joinedload
 import os
 
 
@@ -44,6 +44,10 @@ def add_author():
 
 @app.route('/add_book', methods=['GET', 'POST'])
 def add_book():
+    """
+
+    :return: rendered book_form template
+    """
     authors = None
     publication_year = None
     if request.method == 'GET':
@@ -82,13 +86,29 @@ def add_book():
 
 @app.route('/', methods=['GET'])
 def home():
-    sort_by = request.args.get('sort_by', 'title')   # Default: Title
 
+    sort_by = request.args.get('sort_by', 'title') # Default: Title
+    search_text = request.args.get('search_text', '')
+    print(f"search_text: '{search_text}'")
+    print(f"search_text is None: {search_text is None}")
     try:
-        # get all the books, and with the help of the relationship the Author data as well.
-        books = db.session.execute(
+        if search_text:
+            # get all the books, and with the help of the relationship the Author data as well.
+            books = db.session.execute(
+                db.select(Book)
+                .join(Book.author)  # because of Filtering
+                .options(joinedload(Book.author))  # to also get the name of the author loaded
+                .where(or_(
+                    Book.title.ilike(f'%{search_text}%'),
+            Author.name.ilike(f'%{search_text}%'),
+                    Book.isbn.ilike(f'%{search_text}%')
+                ))
+             ).scalars().all()
+        else:
+            # get all the books, and with the help of the relationship the Author data as well.
+            books = db.session.execute(
             db.select(Book).options(joinedload(Book.author))
-        ).scalars().all()
+            ).scalars().all()
 
         # Sort the Data in the variable, not before the query (should work at this scale, not for a library)
         if sort_by == 'author':
@@ -102,7 +122,7 @@ def home():
         flash(f'Fehler beim Laden der Bücher: {e}')
         books = []
 
-    return render_template('home.html', books=books)
+    return render_template('home.html', books=books, search_text=search_text)
 
 
 if __name__ == '__main__':

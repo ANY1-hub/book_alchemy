@@ -12,28 +12,39 @@
     <h1>my books</h1>
     </header>
     <nav>
-        <form method="GET">
+        <form action='/' method="GET" name="sort_search">
             <label for='sort_by'>Sort by:</label>
             <select name="sort_by" id="sort_by" onchange="this.form.submit()">
                 <option value="title" {% if request.args.get('sort_by') == 'title' %}selected{% endif %}>Title</option>
                 <option value="author" {% if request.args.get('sort_by') == 'author' %}selected{% endif %}>Author</option>
                 <option value="year" {% if request.args.get('sort_by') == 'year' %}selected{% endif %}>1st Publication</option>
             </select>
+            <div class="search_wrapper">
+                <label for='search_text'></label>
+                <input  type="text" id="search_text" name="search_text" placeholder="Search text" value="{{ search_text }}"/>
+                <input class="button" type="submit" value="Search">
+            </div>
         </form>
     </nav>
     <div class="books-container">
-        {% for book in books %}
-        <div class="book-card">
+        {% if books %}
+            {% for book in books %}
+                <div class="book-card">
 
-            <img alt='{{ book.title }}' class="movie-poster" src='https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg' />
-            <h2 class="book-title">{{ book.title }}</h2>
-            <div class="book-info">
-                <strong>author:</strong> {{ book.author.name }}<br>
-                <strong>isbn:</strong> {{ book.isbn }}<br>
-                <strong>1st published:</strong> {{ book.publication_year }}
+                    <img alt='{{ book.title }}' class="movie-poster" src='https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg' />
+                    <h2 class="book-title">{{ book.title }}</h2>
+                    <div class="book-info">
+                        <strong>author:</strong> {{ book.author.name }}<br>
+                        <strong>isbn:</strong> {{ book.isbn }}<br>
+                        <strong>1st published:</strong> {{ book.publication_year }}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="book-card">
+                <strong>We could not find any books to your search.</strong>
             </div>
-        </div>
-        {% endfor %}
+        {% endif %}
     </div>
 
     {% with messages = get_flashed_messages() %}
