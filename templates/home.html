@@ -12,7 +12,7 @@
     <h1>my books</h1>
     </header>
     <nav>
-        <form action='/' method="GET" name="sort_search">
+        <form class="search" action='/' method="GET" name="sort_search">
             <label for='sort_by'>Sort by:</label>
             <select name="sort_by" id="sort_by" onchange="this.form.submit()">
                 <option value="title" {% if request.args.get('sort_by') == 'title' %}selected{% endif %}>Title</option>
@@ -38,6 +38,9 @@
                         <strong>isbn:</strong> {{ book.isbn }}<br>
                         <strong>1st published:</strong> {{ book.publication_year }}
                     </div>
+                    <form class="delete_button" action='/book/{{book.book_id}}/delete' method="POST" name="delete">
+                        <input class="button" type="submit" value="Delete">
+                    </form>
                 </div>
             {% endfor %}
         {% else %}
