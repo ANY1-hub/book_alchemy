@@ -2,6 +2,7 @@ from typing import Optional
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.orm import relationship
 
 db = SQLAlchemy()
 
@@ -11,6 +12,7 @@ class Author(db.Model):
     name = Column(String)
     birth_date: Optional[datetime] = Column(DateTime, nullable=True)
     date_of_death: Optional[datetime] = Column(DateTime, nullable=True)
+    books = relationship('Book', back_populates='author')
 
     def __str__(self):
         return f'id: {self.id}, name: {self.name}, birth_date: {self.birth_date}, date_of_death: {self.date_of_death}'
@@ -25,6 +27,7 @@ class Book(db.Model):
     title = Column(String)
     publication_year: Optional[int] = Column(Integer, nullable=True)
     author_id = db.Column(Integer, db.ForeignKey('author.author_id'))
+    author = relationship('Author', back_populates='books')
 
     def __str__(self):
         return f'id: {self.id}, isbn: {self.isbn}, title: {self.title}, publication_year: {self.publication_year}, author_id: {self.author_id}'
