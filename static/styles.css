@@ -44,6 +44,7 @@ nav select#sort_by {
     max-width: fit-content;
     height: 2.5rem;
     align-self: anchor-center;
+    padding: .75rem .25rem;
 }
 
 nav input.button {
