@@ -1,6 +1,20 @@
 this is a learn project for using Flask, sqlalchemy and SQLite
 
-# Possible future features
+# SETUP:
+- After cloning, it is important to set the `FLASK_SECRET=` variable in the
+`.env` file in a `config` folder, that you need to create in the root directory, with your own value.
+
+- also create a `data` folder in the root of the project, then in the app.py run the following,
+currently out commented code only once, in order to create your own Database :  
+` # ran only once to create the db
+   with app.app_context():
+   db.create_all()`
+after successfully created, comment it out again.
+
+
+
+
+# Possible future features:
 
 # Bonus ✨
 Woo hoo, you did it! 🌟 You created a Flask application and connected it to a SQLite database using SQLAlchemy!
